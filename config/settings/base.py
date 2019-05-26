@@ -75,14 +75,14 @@ THIRD_PARTY_APPS = [
     'djcelery_email',
 ]
 LOCAL_APPS = [
-    'users.apps.UsersConfig',
+    'zanhu.users.apps.UsersConfig',
     # Your stuff: custom apps go here
-    'articles.apps.ArticlesConfig',
-    'messager.apps.MessagerConfig',
-    'news.apps.NewsConfig',
-    'notifications.apps.NotificationsConfig',
-    'qa.apps.QaConfig',
-    'search.apps.SearchConfig'
+    'zanhu.articles.apps.ArticlesConfig',
+    'zanhu.messager.apps.MessagerConfig',
+    'zanhu.news.apps.NewsConfig',
+    'zanhu.notifications.apps.NotificationsConfig',
+    'zanhu.qa.apps.QaConfig',
+    'zanhu.search.apps.SearchConfig'
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
