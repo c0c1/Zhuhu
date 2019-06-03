@@ -39,10 +39,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='mysql://social'),
+    'default': env.db('DATABASE_URL', default='mysql://zanhu'),
 }
 # https://docs.djangoproject.com/en/dev/topics/db/transactions/
-DATABASES['default']['ATOMIC_REQUESTS'] = True  # 将HTTP请求封装到事务
+DATABASES['default']['ATOMIC_REQUESTS'] = True  # 将HTTP请求中对数据库的操作封装成事务
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ DJANGO_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.forms',
+    'django.forms',  # 放在此列表的最后！用户后面重写django内置widget的模板
 ]
 THIRD_PARTY_APPS = [
     'channels',
@@ -77,12 +77,12 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'zanhu.users.apps.UsersConfig',
     # Your stuff: custom apps go here
-    'zanhu.articles.apps.ArticlesConfig',
-    'zanhu.messager.apps.MessagerConfig',
     'zanhu.news.apps.NewsConfig',
-    'zanhu.notifications.apps.NotificationsConfig',
+    'zanhu.articles.apps.ArticlesConfig',
     'zanhu.qa.apps.QaConfig',
-    'zanhu.search.apps.SearchConfig'
+    'zanhu.messager.apps.MessagerConfig',
+    'zanhu.notifications.apps.NotificationsConfig',
+    'zanhu.search.apps.SearchConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -269,11 +269,11 @@ CELERYD_TASK_SOFT_TIME_LIMIT = 60  # 任务的软时间限制，超时候SoftTim
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  # email/username_email
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # none , optional
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = 'zanhu.users.adapters.AccountAdapter'
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -296,25 +296,25 @@ ASGI_APPLICATION = 'config.routing.application'
 
 # 频道层的缓存
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [f'{env("REDIS_URL", default="redis://127.0.0.1:6379")}/3', ],  # channels缓存通道使用Redis 3
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [f'{env("REDIS_URL", default="redis://127.0.0.1:6379")}/3', ],  # channel layers缓存使用Redis 3
         },
-    }
+    },
 }
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        # 使用Elasticsearch搜索引擎
+        # 使用的Elasticsearch搜索引擎
         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
         # Elasticsearch连接的地址
         'URL': 'http://127.0.0.1:9200/',
         # 默认的索引名
         'INDEX_NAME': 'zanhu',
-    },
+    }
 }
 
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20  # 分页
-# 实时信号量处理器，模型类中数据添加、更新、删除时自动更新索引
+# 实时信号量处理器，模型类中数据增加、更新、删除时自动更新索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
