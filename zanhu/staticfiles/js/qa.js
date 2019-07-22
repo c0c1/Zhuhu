@@ -26,8 +26,7 @@ $(function () {
     }
 
     var csrftoken = getCookie('csrftoken');
-    var page_title = $(document).attr("title");
-    // This sets up every ajax call with proper headers.
+    // 设置Ajax请求头
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -51,7 +50,7 @@ $(function () {
     });
 
     $(".question-vote").click(function () {
-        // Vote on a question.
+        // 给问题投票
         var span = $(this);
         var question = $(this).closest(".question").attr("question-id");
         vote = null;
@@ -79,7 +78,7 @@ $(function () {
     });
 
     $(".answer-vote").click(function () {
-        // Vote on an answer.
+        // 给回答投票
         var span = $(this);
         var answer = $(this).closest(".answer").attr("answer-id");
         vote = null;
@@ -106,22 +105,23 @@ $(function () {
         });
     });
 
-    $("#acceptAnswer").click(function () {
-        // Mark an answer as accepted.
-        var span = $(this);
-        var answer = $(this).closest(".answer").attr("answer-id");
+    $(".acceptAnswer").click(function () {
+        // 接受回答
+        const answer_id = $(this).closest(".answer").attr("answer-id");
+        const accepted_answer = $('div[answer-id=' + answer_id + '] .accepted');
+        const answer = $('div[answer-id=' + answer_id + '] .acceptAnswer');
         $.ajax({
             url: '/qa/accept-answer/',
             data: {
-                'answer': answer
+                'answer': answer_id
             },
             type: 'post',
             cache: false,
             success: function (data) {
-                $("#acceptAnswer").removeClass("accepted");
-                $("#acceptAnswer").prop("title", "点击接受回答");
-                $("#acceptAnswer").addClass("accepted");
-                $("#acceptAnswer").prop("title", "该回答已被采纳");
+                $(".accepted").removeClass("accepted");
+                $(".accepted").prop("title", "点击接受回答");
+                answer.addClass("accepted");
+                answer.prop("title", "该回答已被采纳");
             }
         });
     });

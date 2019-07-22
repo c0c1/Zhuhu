@@ -12,7 +12,7 @@
         {% if answer.is_answer %}
             <i class="fa fa-check accept accepted" aria-hidden="true" title="此回答已被采纳"></i>
         {% elif not answer.is_answer and user.username == question.user.username %}
-            <i id="acceptAnswer" class="fa fa-check accept" aria-hidden="true" title="点击采纳回答"></i>
+            <i class="fa fa-check accept acceptAnswer" aria-hidden="true" title="点击采纳回答"></i>
         {% endif %}
     </div>
     <div class="col-md-11">
