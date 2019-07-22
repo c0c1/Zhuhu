@@ -79,9 +79,8 @@ $(function () {
 
     $(".answer-vote").click(function () {
         // 给回答投票
-        var span = $(this);
-        var answer = $(this).closest(".answer").attr("answer-id");
-        vote = null;
+        const answer_id = $(this).closest(".answer").attr("answer-id");
+        const answer = $('div[answer-id=' + answer_id + '] .votes');
         if ($(this).hasClass("up-vote")) {
             vote = "U";
         } else {
@@ -90,17 +89,20 @@ $(function () {
         $.ajax({
             url: '/qa/answer/vote/',
             data: {
-                'answer': answer,
+                'answer': answer_id,
                 'value': vote
             },
             type: 'post',
             cache: false,
             success: function (data) {
-                $('.vote', span).removeClass('voted');
                 if (vote === "U") {
-                    $(span).addClass('voted');
+                    $('div[answer-id=' + answer_id + '] .down-vote').removeClass('voted');
+                    $('div[answer-id=' + answer_id + '] .up-vote').addClass('voted');
+                } else {
+                    $('div[answer-id=' + answer_id + '] .up-vote').removeClass('voted');
+                    $('div[answer-id=' + answer_id + '] .down-vote').addClass('voted');
                 }
-                $("#answerVotes").text(data.votes);
+                answer.text(data.votes);
             }
         });
     });
